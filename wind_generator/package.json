@@ -1,0 +1,25 @@
+{
+  "name": "wind_generator",
+  "version": "1.0.0",
+  "description": "A project for generating wind data",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "body-parser": "^2.2.0",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "mysql2": "^3.14.0"
+  },
+  "devDependencies": {
+    "@types/body-parser": "^1.19.5",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.1",
+    "@types/leaflet": "^1.9.17",
+    "typescript": "^4.0.0"
+  },
+  "author": "Daiki Shibata",
+  "license": "ISC"
+}
