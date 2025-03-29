@@ -39,7 +39,7 @@ exports.__esModule = true;
 // server.ts
 var express = require("express");
 var bodyParser = require("body-parser");
-// import * as mysql from 'mysql2/promise'; // MySQL関連のインポートをコメントアウト
+var mysql = require("mysql2/promise"); // MySQL関連のインポートをコメントアウト
 var cors = require("cors");
 var app = express();
 var port = 3000; // 適宜ポート番号を設定
@@ -48,44 +48,45 @@ app.use(bodyParser.json());
 app.use(cors());
 app.use(express.static('public')); // public フォルダを静的ファイルとして提供
 // MySQL 接続プールの設定（環境に合わせて修正してください）
-// const pool = mysql.createPool({
-//   host: 'localhost',
-//   user: 'your_username',
-//   password: 'your_password',
-//   database: 'your_database',
-//   waitForConnections: true,
-//   connectionLimit: 10,
-//   queueLimit: 0
-// });
+var pool = mysql.createPool({
+    host: 'localhost',
+    user: 'wasa',
+    password: 'wasafee',
+    database: 'wind_analysis_db',
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
+});
 // POST エンドポイント：風データを保存する
 app.post('/api/save_wind_data', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var _a, measurement_group_id, measured_at, wind_direction, wind_speed, latitude, longitude, coverage // 必要に応じた追加情報（今回のテーブルには登録しませんが、拡張可能）
-    ;
+    , sql, result, error_1;
     return __generator(this, function (_b) {
-        try {
-            _a = req.body, measurement_group_id = _a.measurement_group_id, measured_at = _a.measured_at, wind_direction = _a.wind_direction, wind_speed = _a.wind_speed, latitude = _a.latitude, longitude = _a.longitude, coverage = _a.coverage;
-            // wind_measurements テーブルにデータを挿入
-            // const sql = `
-            //   INSERT INTO wind_measurements
-            //   (measurement_group_id, measured_at, wind_direction, wind_speed, latitude, longitude)
-            //   VALUES (?, ?, ?, ?, ?, ?)
-            // `;
-            // const [result] = await pool.execute(sql, [
-            //   measurement_group_id,
-            //   measured_at,
-            //   wind_direction,
-            //   wind_speed,
-            //   latitude,
-            //   longitude
-            // ]);
-            // データ保存の代わりに成功メッセージを返す
-            res.json({ message: 'データを正常に受け取りました' });
+        switch (_b.label) {
+            case 0:
+                _b.trys.push([0, 2, , 3]);
+                _a = req.body, measurement_group_id = _a.measurement_group_id, measured_at = _a.measured_at, wind_direction = _a.wind_direction, wind_speed = _a.wind_speed, latitude = _a.latitude, longitude = _a.longitude, coverage = _a.coverage;
+                sql = "\n      INSERT INTO wind_measurements\n      (measurement_group_id, measured_at, wind_direction, wind_speed, latitude, longitude)\n      VALUES (?, ?, ?, ?, ?, ?)\n    ";
+                return [4 /*yield*/, pool.execute(sql, [
+                        measurement_group_id,
+                        measured_at,
+                        wind_direction,
+                        wind_speed,
+                        latitude,
+                        longitude
+                    ])];
+            case 1:
+                result = (_b.sent())[0];
+                // データ保存の代わりに成功メッセージを返す
+                res.json({ message: 'データを正常に受け取りました' });
+                return [3 /*break*/, 3];
+            case 2:
+                error_1 = _b.sent();
+                console.error('Error saving wind data:', error_1);
+                res.status(500).json({ message: 'データ保存に失敗しました', error: error_1 });
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
         }
-        catch (error) {
-            console.error('Error saving wind data:', error);
-            res.status(500).json({ message: 'データ保存に失敗しました', error: error });
-        }
-        return [2 /*return*/];
     });
 }); });
 app.listen(port, function () {
