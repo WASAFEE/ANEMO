@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    
+        <script>
+            L_NO_TOUCH = false;
+            L_DISABLE_3D = false;
+        </script>
+    
+    <style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+    <style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_5f0cb27b4ac50e03b143b26816a6b7f6 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+        
+</head>
+<body>
+    
+    
+<div style="
+    position: fixed; 
+    bottom: 50px; left: 50px; width: 150px; height: 90px; 
+    background-color: white; z-index:9999; font-size:14px;
+    border:2px solid grey; border-radius:5px;
+    ">
+    <h4 style="margin:10px;">凡例</h4>
+    <p style="margin:10px;"> 
+        <i style="background:blue; width:10px; height:10px; float:left; margin-right:5px;"></i> 風向矢印<br>
+        <i style="background:red; width:10px; height:10px; float:left; margin-right:5px;"></i> 測定点
+    </p>
+</div>
+    
+            <div class="folium-map" id="map_5f0cb27b4ac50e03b143b26816a6b7f6" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_5f0cb27b4ac50e03b143b26816a6b7f6 = L.map(
+                "map_5f0cb27b4ac50e03b143b26816a6b7f6",
+                {
+                    center: [35.67625666666667, 139.72015366666668],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 14,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_6903c6ec1dcbdc21c095805227e5cac4 = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 19,
+  "maxNativeZoom": 19,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_6903c6ec1dcbdc21c095805227e5cac4.addTo(map_5f0cb27b4ac50e03b143b26816a6b7f6);
+        
+    
+            var poly_line_b053e5c3ab0859135282590158e1a323 = L.polyline(
+                [[35.681236, 139.767125], [35.681236, 139.770625]],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "blue", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_5f0cb27b4ac50e03b143b26816a6b7f6);
+        
+    
+            poly_line_b053e5c3ab0859135282590158e1a323.bindTooltip(
+                `<div>
+                     風向: 90.0°, 風速: 3.5 m/s
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_46b7f9ef0ef5b1840a94bccf71c18da2 = L.circleMarker(
+                [35.681236, 139.767125],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_5f0cb27b4ac50e03b143b26816a6b7f6);
+        
+    
+            var poly_line_5df21f3318dcafb89f98b668bfde8c0a = L.polyline(
+                [[35.6895, 139.6917], [35.68986605411954, 139.69588401773197]],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "blue", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_5f0cb27b4ac50e03b143b26816a6b7f6);
+        
+    
+            poly_line_5df21f3318dcafb89f98b668bfde8c0a.bindTooltip(
+                `<div>
+                     風向: 95.0°, 風速: 4.2 m/s
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_43b751ad5c251a642b9c49278366ce49 = L.circleMarker(
+                [35.6895, 139.6917],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_5f0cb27b4ac50e03b143b26816a6b7f6);
+        
+    
+            var poly_line_48d84e2874b92dda74884d9950f731c7 = L.polyline(
+                [[35.658034, 139.701636], [35.65770280817756, 139.70542153985275]],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "blue", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_5f0cb27b4ac50e03b143b26816a6b7f6);
+        
+    
+            poly_line_48d84e2874b92dda74884d9950f731c7.bindTooltip(
+                `<div>
+                     風向: 85.0°, 風速: 3.8 m/s
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_25b1abd90bbc643e0bc8d37fc2381375 = L.circleMarker(
+                [35.658034, 139.701636],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.8, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_5f0cb27b4ac50e03b143b26816a6b7f6);
+        
+</script>
+</html>

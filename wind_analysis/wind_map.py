@@ -6,14 +6,14 @@ import math
 # DB接続設定（環境に合わせて変更してください）
 conn = pymysql.connect(
     host='localhost',
-    user='your_username',
-    password='your_password',
-    database='your_database',
+    user='wasa',
+    password='wasafee',
+    database='wind_analysis_db',
     charset='utf8mb4'
 )
 
 # SQLからデータを読み込む（measurement_group_id = 1の場合）
-query = "SELECT latitude, longitude, wind_direction, wind_speed FROM wind_measurements WHERE measurement_group_id = 1;"
+query = "SELECT latitude, longitude, wind_direction, wind_speed FROM wind WHERE measurement_group_id = 1;"
 with conn.cursor() as cursor:
     cursor.execute(query)
     result = cursor.fetchall()
@@ -58,6 +58,25 @@ def add_wind_arrow(map_obj, lat, lon, direction_deg, speed):
 # 各測定データを地図に表示
 for row in df.iter_rows(named=True):
     add_wind_arrow(m, row['latitude'], row['longitude'], row['wind_direction'], row['wind_speed'])
+
+# 凡例を追加するためのHTMLを作成
+legend_html = '''
+<div style="
+    position: fixed; 
+    bottom: 50px; left: 50px; width: 150px; height: 90px; 
+    background-color: white; z-index:9999; font-size:14px;
+    border:2px solid grey; border-radius:5px;
+    ">
+    <h4 style="margin:10px;">凡例</h4>
+    <p style="margin:10px;"> 
+        <i style="background:blue; width:10px; height:10px; float:left; margin-right:5px;"></i> 風向矢印<br>
+        <i style="background:red; width:10px; height:10px; float:left; margin-right:5px;"></i> 測定点
+    </p>
+</div>
+'''
+
+# 地図に凡例を追加
+m.get_root().html.add_child(folium.Element(legend_html))
 
 # 地図をHTML形式で保存
 m.save('wind_map.html')

@@ -60,5 +60,5 @@ app.post('/api/save_wind_data', async (req: express.Request, res: express.Respon
 });
 
 app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+  console.log(`Server is running on port http://localhost:${port}`);
 });

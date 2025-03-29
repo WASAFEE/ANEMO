@@ -1,10 +1,9 @@
-
 # 風向・風速データのテーブル設計と使い方
 
 ## テーブル設計
 
 ```sql
-CREATE TABLE wind_measurements (
+CREATE TABLE wind (
     id INT AUTO_INCREMENT PRIMARY KEY,
     measurement_group_id INT NOT NULL,  -- 同時刻の測定グループを識別するためのID
     measured_at DATETIME NOT NULL,
@@ -20,7 +19,7 @@ CREATE TABLE wind_measurements (
 ## データ挿入例
 
 ```sql
-INSERT INTO wind_measurements (measurement_group_id, measured_at, wind_direction, wind_speed, latitude, longitude)
+INSERT INTO wind (measurement_group_id, measured_at, wind_direction, wind_speed, latitude, longitude)
 VALUES
 (1, '2025-03-25 09:30:00', 90.0, 3.5, 35.681236, 139.767125),
 (1, '2025-03-25 09:30:00', 95.0, 4.2, 35.689500, 139.691700),
@@ -33,7 +32,7 @@ VALUES
 
 ```sql
 SELECT *
-FROM wind_measurements
+FROM wind
 WHERE measurement_group_id = 1;
 ```
 
@@ -41,10 +40,10 @@ WHERE measurement_group_id = 1;
 
 ```sql
 SELECT *
-FROM wind_measurements
+FROM wind
 WHERE measurement_group_id = (
     SELECT measurement_group_id
-    FROM wind_measurements
+    FROM wind
     ORDER BY measured_at DESC
     LIMIT 1
 );

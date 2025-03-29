@@ -89,5 +89,5 @@ app.post('/api/save_wind_data', function (req, res) { return __awaiter(void 0, v
     });
 }); });
 app.listen(port, function () {
-    console.log("Server is running on port ".concat(port));
+    console.log("Server is running on port http://localhost:".concat(port));
 });
