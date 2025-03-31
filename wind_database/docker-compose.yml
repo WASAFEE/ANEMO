@@ -1,0 +1,11 @@
+version: "3.7"
+services:
+  windanalysis_db_migration:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    image: windanalysis_db_migration
+    environment:
+      FLYWAY_USER: wasa
+      FLYWAY_PASSWORD: wasafee
+      FLYWAY_CONNECT_RETRIES: 6

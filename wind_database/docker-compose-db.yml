@@ -1,0 +1,13 @@
+version: "3.7"
+services:
+  postgresql:
+    build:
+      context: .
+      dockerfile: ./db/Dockerfile
+    image: windanalysis_db
+    environment:
+      POSTGRES_PASSWORD: example
+    ports:
+      - 5433:5432
+    volumes:
+      - ./db/data:/var/lib/postgresql/data
