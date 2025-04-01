@@ -2,69 +2,105 @@
 
 ## 環境構築
 
-### Docker を利用した DB 環境の構築
+### Docker と flyway を利用した DB 環境の構築
 
-このプロジェクトでは、Docker Compose を使用して MySQL のデータベース環境を構築します。  
-これにより、プロジェクトメンバー全員が同一の DB 環境を簡単に利用できるようになります。
+このプロジェクトでは、Docker Compose を使用して PostgreSQL のデータベース環境を構築します。  
+データベースのマイグレーションは flyway を使用して管理します。
 
-#### 構成概要
+#### ローカル DB 環境構築
 
-- **MySQL コンテナ**
+##### ローカル DB サーバーの立ち上げ
 
-  - 指定した MySQL バージョンで DB を構築
-  - 必要な環境変数（例：`MYSQL_ROOT_PASSWORD`、`MYSQL_DATABASE`、`MYSQL_USER`、`MYSQL_PASSWORD`）を設定
-  - 初期化 SQL ファイルをマウントし、コンテナ起動時に自動で実行（例：`wind` テーブルの作成など）
-
-- **(オプション) Adminer コンテナ**
-  - データベースの状態をブラウザで確認するための Web ベースの管理ツール
-  - http://localhost:8080 でアクセス可能
-
-#### セットアップ手順
-
-1. **環境変数の設定**  
-   `.env` ファイル内で設定されている環境変数を、実際の環境に合わせて変更してください。
-
-2. **コンテナの起動**  
-   プロジェクトルートディレクトリで以下のコマンドを実行し、コンテナを起動します。
-
-   ```bash
-   docker compose up -d
-   ```
-
-3. **コンテナの停止**  
-   コンテナを停止する場合は以下のコマンドを実行します。
-
-   ```bash
-   docker compose down
-   ```
-
-## テーブル設計(以下は実行不要)
-
-```sql
-CREATE TABLE wind (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    measurement_group_id INT NOT NULL,  -- 同時刻の測定グループを識別するためのID
-    measured_at DATETIME NOT NULL,
-    wind_direction FLOAT NOT NULL,      -- 風向（0〜360度）
-    wind_speed FLOAT NOT NULL,          -- 風速（m/s）
-    latitude DOUBLE NOT NULL,           -- 緯度
-    longitude DOUBLE NOT NULL,          -- 経度
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    INDEX(measurement_group_id)
-);
+```bash
+$ docker compose -f docker-compose-db.yml build
+$ docker compose -f docker-compose-db.yml up -d
 ```
 
-## データ挿入例
+##### ローカル DB サーバーの停止
 
-```sql
-INSERT INTO wind (measurement_group_id, measured_at, wind_direction, wind_speed, latitude, longitude)
-VALUES
-(1, '2025-03-25 09:30:00', 90.0, 3.5, 35.681236, 139.767125),
-(1, '2025-03-25 09:30:00', 95.0, 4.2, 35.689500, 139.691700),
-(1, '2025-03-25 09:30:00', 85.0, 3.8, 35.658034, 139.701636);
+```bash
+$ docker compose -f docker-compose-db.yml down
+```
+
+#### マイグレーションの実行
+
+```bash
+$ make flyway_migrate_all
+```
+
+DB の一部にのみマイグレーションを実行したい場合は、他のコマンドを使用してください。
+コマンド一覧は Makefile 内に記載されています。
+
+> **Note**
+> データを migrate しなおす場合、DB の実態である db/data ファイルを削除してください。
+
+## Docker Save / Load
+
+### Docker Saving
+
+preparation
+
+```bash
+$ docker compose build
+$ docker images
+```
+
+Docker image save
+
+```bash
+$ docker save windanalysis_db_migration -o windanalysis_db_migration.`date "+%Y%m%d_%H%M%S"`.tar
+$ file windanalysis_db_migration.YYYYmmdd_HMS.tar
+```
+
+Delete current docker image
+
+```bash
+$ docker rmi windanalysis_db_migration
+```
+
+### Docker Loading
+
+```bash
+$ docker load -i windanalysis_db_migration.YYYYmmdd_HMS.tar
+$ docker images
+```
+
+## ルール
+
+### file 命名規則
+
+- prefix
+  - "V" で Versioned Migration 、"U" で Undo Migration 、 "R" で Repeat Migration を示します。
+- version
+  - バージョン番号は一意になるように設定します。 "."(ピリオド) で区切る文字列で定義します。 通常は整数で定義するようです。
+- separator
+  - "\_\_"(アンダースコア 2 つ) 固定です。
+- description
+  - 該当バージョンの修正概要を記載します。 文字は " "(空白) または "\_"(アンダースコア) で結合します。
+- suffix
+  - ".sql" 固定です。
+
+### create schema
+
+```
+make flyway_migrate_core
+```
+
+### insert test data
+
+```
+make flyway_migrate_testdata_all
 ```
 
 ## データ取得例
+
+DBeaver などで localhost:5432 に接続してください。
+
+- データベース名: windanalysisdb
+- ユーザー名: postgres
+- パスワード: example
+
+### データ取得クエリ
 
 - 特定グループ（`measurement_group_id = 1`）のデータ取得
 
