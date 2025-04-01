@@ -1,4 +1,4 @@
-DOCKER_COMPOSE := docker-compose -f docker-compose.yml
+DOCKER_COMPOSE := docker compose -f docker-compose.yml
 TARGET         := postgresql
 
 help: ## ヘルプを表示
@@ -44,4 +44,7 @@ flyway_repair_testdata_windanalysisdb: ## windanalysisdb テストデータマ�
 flyway_info_windanalysisdb: ## windanalysisdb マイグレーション状況を表示
 	$(DOCKER_COMPOSE) run --rm windanalysis_db_migration -url=jdbc:postgresql://$(TARGET)/windanalysisdb -locations="filesystem:/flyway/sql/windanalysisdb" info
 
-.PHONY: build ps logs logs-f flyway_migrate_all flyway_migrate_core flyway_migrate_windanalysisdb flyway_migrate_testdata_all flyway_migrate_testdata_windanalysisdb flyway_repair_core flyway_repair_windanalysisdb flyway_repair_testdata_windanalysisdb flyway_info_windanalysisdb
+flyway_clean_windanalysisdb: ## windanalysisdb マイグレーションを削除
+	$(DOCKER_COMPOSE) run --rm windanalysis_db_migration -url=jdbc:postgresql://$(TARGET)/windanalysisdb -locations="filesystem:/flyway/sql/windanalysisdb" clean
+
+.PHONY: build ps logs logs-f flyway_migrate_all flyway_migrate_core flyway_migrate_windanalysisdb flyway_migrate_testdata_all flyway_migrate_testdata_windanalysisdb flyway_repair_core flyway_repair_windanalysisdb flyway_repair_testdata_windanalysisdb flyway_info_windanalysisdb flyway_clean_windanalysisdb

@@ -6,6 +6,6 @@ services:
       dockerfile: ./Dockerfile
     image: windanalysis_db_migration
     environment:
-      FLYWAY_USER: wasa
-      FLYWAY_PASSWORD: wasafee
+      FLYWAY_USER: postgres
+      FLYWAY_PASSWORD: example
       FLYWAY_CONNECT_RETRIES: 6

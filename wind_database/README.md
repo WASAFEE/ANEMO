@@ -12,14 +12,14 @@
 ##### ローカル DB サーバーの立ち上げ
 
 ```bash
-$ docker compose -f docker-compose.yml build
-$ docker compose -f docker-compose.yml up -d
+$ docker compose -f docker-compose-db.yml build
+$ docker compose -f docker-compose-db.yml up -d
 ```
 
 ##### ローカル DB サーバーの停止
 
 ```bash
-$ docker compose -f docker-compose.yml down
+$ docker compose -f docker-compose-db.yml down
 ```
 
 #### マイグレーションの実行
@@ -90,4 +90,35 @@ make flyway_migrate_core
 
 ```
 make flyway_migrate_testdata_all
+```
+
+## データ取得例
+
+DBeaver などで localhost:5432 に接続してください。
+
+- データベース名: windanalysisdb
+- ユーザー名: postgres
+- パスワード: example
+
+### データ取得クエリ
+
+- 特定グループ（`measurement_group_id = 1`）のデータ取得
+
+```sql
+SELECT *
+FROM wind
+WHERE measurement_group_id = 1;
+```
+
+- 最新の測定グループのデータ取得
+
+```sql
+SELECT *
+FROM wind
+WHERE measurement_group_id = (
+    SELECT measurement_group_id
+    FROM wind
+    ORDER BY measured_at DESC
+    LIMIT 1
+);
 ```
