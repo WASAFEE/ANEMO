@@ -32,7 +32,7 @@ DB の一部にのみマイグレーションを実行したい場合は、他�
 コマンド一覧は Makefile 内に記載されています。
 
 > **Note**
-> データを migrate しなおす場合、DB の実態である db/data ファイルを削除してください。
+> データを migrate しなおす場合、DB の実態である db/data ファイルを削除し、dockerを立ち上げ直してください。
 
 ## Docker Save / Load
 
@@ -94,7 +94,7 @@ make flyway_migrate_testdata_all
 
 ## データ取得例
 
-DBeaver などで localhost:5432 に接続してください。
+DBeaver などで localhost:5433 に接続してください。
 
 - データベース名: windanalysisdb
 - ユーザー名: postgres
