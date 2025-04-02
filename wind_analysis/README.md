@@ -25,7 +25,7 @@ pip install -r requirements.txt
 - **赤い丸**が測定した地点
 - **青色の線**が風の吹く方向と強さを示しています（矢印が長いほど風が強いことを示します）。
 
-![風向・風速マップの表示例](assets/wind_map_example.png)
+![風向・風速マップの表示例](../assets/wind_map.png)
 
 ## 備考
 
