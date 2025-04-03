@@ -18,6 +18,7 @@ function onMapMouseDown(e) {
     }
 }
 function onMapMouseUp(e) {
+    var _a;
     if (!startLatLng)
         return;
     var endLatLng = e.latlng;
@@ -42,7 +43,7 @@ function onMapMouseUp(e) {
     // 登録する地点はここでは始点（startLatLng）を採用
     var measuredAt = new Date().toISOString().slice(0, 19).replace('T', ' ');
     var payload = {
-        measurement_group_id: 1,
+        measurement_group_id: Number(((_a = document.getElementById('measurement-group-id')) === null || _a === void 0 ? void 0 : _a.value) || -1),
         measured_at: measuredAt,
         wind_direction: angle,
         wind_speed: distance,

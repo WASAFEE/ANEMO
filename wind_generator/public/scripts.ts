@@ -67,7 +67,7 @@ interface WindData {
     // 登録する地点はここでは始点（startLatLng）を採用
     const measuredAt = new Date().toISOString().slice(0, 19).replace('T', ' ');
     const payload: WindData = {
-      measurement_group_id: 1, // 必要に応じて動的に変更可能
+      measurement_group_id: Number((document.getElementById('measurement-group-id') as HTMLInputElement)?.value || -1),
       measured_at: measuredAt,
       wind_direction: angle,
       wind_speed: distance, // 任意の単位（必要に応じて変換）

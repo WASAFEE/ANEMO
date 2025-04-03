@@ -5,26 +5,7 @@
 プロジェクトルートで以下のコマンドを実行して必要なパッケージをインストールします。
 
 ```bash
-npm install express body-parser mysql2 cors
-npm install --save-dev typescript @types/express @types/node @types/cors
-```
-
-## tsconfig.json の設定
-
-サーバー側やクライアント側の TypeScript をコンパイルするための設定ファイル例です。
-
-```json
-{
-  "compilerOptions": {
-    "target": "ES6",
-    "module": "CommonJS",
-    "outDir": "dist",
-    "rootDir": ".",
-    "strict": true,
-    "esModuleInterop": true
-  },
-  "include": ["server.ts", "public/scripts.ts"]
-}
+npm install
 ```
 
 ## サーバー側のコンパイルと実行
@@ -33,7 +14,7 @@ npm install --save-dev typescript @types/express @types/node @types/cors
 
 ```bash
 npx tsc server.ts
-node server.js
+node dist/server.js
 ```
 
 ## クライアント側のビルド

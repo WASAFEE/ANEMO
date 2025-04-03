@@ -18,10 +18,17 @@
     #info {
       margin-top: 10px;
     }
+    .input-group {
+      margin: 10px 0;
+    }
   </style>
 </head>
 <body>
   <h1>風向・風速入力インターフェース</h1>
+  <div class="input-group">
+    <label for="measurement-group-id">測定グループID:</label>
+    <input type="number" id="measurement-group-id" required min="1" value="1">
+  </div>
   <p>マップ上でクリック＆ドラッグして、風データを入力してください。</p>
   <div id="map" style="height: 600px;"></div>
   <div id="info"></div>

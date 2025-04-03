@@ -5,13 +5,16 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "build": "tsc"
+    "build": "tsc",
+    "watch": "tsc --watch"
   },
   "dependencies": {
+    "@types/pg": "^8.11.11",
     "body-parser": "^2.2.0",
     "cors": "^2.8.5",
     "express": "^4.21.2",
-    "mysql2": "^3.14.0"
+    "mysql2": "^3.14.0",
+    "pg": "^8.14.1"
   },
   "devDependencies": {
     "@types/body-parser": "^1.19.5",
