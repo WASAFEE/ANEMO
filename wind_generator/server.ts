@@ -1,30 +1,29 @@
 // server.ts
 import express = require('express');
 import bodyParser = require('body-parser');
-import * as mysql from 'mysql2/promise'; // MySQL関連のインポートをコメントアウト
+import { Pool } from 'pg';
 import cors = require('cors');
 
 const app = express();
-const port = 3000; // 適宜ポート番号を設定
+const port = 3000;
 
 // ミドルウェアの設定
 app.use(bodyParser.json());
 app.use(cors());
-app.use(express.static('public')); // public フォルダを静的ファイルとして提供
+app.use(express.static('public'));
 
-// MySQL 接続プールの設定（環境に合わせて修正してください）
-const pool = mysql.createPool({
+// PostgreSQL 接続プールの設定
+const pool = new Pool({
   host: 'localhost',
-  user: 'wasa',
+  user: 'wasa_user',
   password: 'wasafee',
-  database: 'wind_analysis_db',
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
+  database: 'windanalysisdb',
+  port: 5433
 });
 
 // POST エンドポイント：風データを保存する
 app.post('/api/save_wind_data', async (req: express.Request, res: express.Response) => {
+  const client = await pool.connect();
   try {
     const {
       measurement_group_id,
@@ -33,17 +32,18 @@ app.post('/api/save_wind_data', async (req: express.Request, res: express.Respon
       wind_speed,
       latitude,
       longitude,
-      coverage  // 必要に応じた追加情報（今回のテーブルには登録しませんが、拡張可能）
     } = req.body;
 
+    // トランザクションの開始
+    await client.query('BEGIN');
+
     // wind_measurements テーブルにデータを挿入
-    // TODO: パラメーターを追加
     const sql = `
-      INSERT INTO wind
+      INSERT INTO weather.wind
       (measurement_group_id, measured_at, wind_direction, wind_speed, latitude, longitude)
-      VALUES (?, ?, ?, ?, ?, ?)
+      VALUES ($1, $2, $3, $4, $5, $6)
     `;
-    const [result] = await pool.execute(sql, [
+    await client.query(sql, [
       measurement_group_id,
       measured_at,
       wind_direction,
@@ -52,11 +52,20 @@ app.post('/api/save_wind_data', async (req: express.Request, res: express.Respon
       longitude
     ]);
 
+    // トランザクションのコミット
+    await client.query('COMMIT');
+
     // データ保存の代わりに成功メッセージを返す
-    res.json({ message: 'データを正常に受け取りました' });
+    res.json({ message: 'データを正常に保存しました' });
+    console.log(`データを正常に保存しました: ${sql}`);
   } catch (error) {
+    // エラーが発生した場合はロールバック
+    await client.query('ROLLBACK');
     console.error('Error saving wind data:', error);
     res.status(500).json({ message: 'データ保存に失敗しました', error });
+  } finally {
+    // クライアントを解放
+    client.release();
   }
 });
 
