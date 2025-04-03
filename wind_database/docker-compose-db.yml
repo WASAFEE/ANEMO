@@ -6,8 +6,9 @@ services:
       dockerfile: ./db/Dockerfile
     image: windanalysis_db
     environment:
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: example
     ports:
-      - 5432:5432
+      - 5433:5432
     volumes:
       - ./db/data:/var/lib/postgresql/data

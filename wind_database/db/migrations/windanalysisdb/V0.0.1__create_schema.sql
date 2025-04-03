@@ -2,7 +2,7 @@
 CREATE SCHEMA IF NOT EXISTS weather;
 
 -- USER
-CREATE USER wasa_user;
+CREATE USER wasa_user WITH PASSWORD 'wasafee';
 -- GRANT
-GRANT USAGE, CREATE ON SCHEMA weather TO wasa_user;
-GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA weather TO wasa_user;
+GRANT ALL ON SCHEMA weather TO wasa_user;
+GRANT ALL ON ALL TABLES IN SCHEMA weather TO wasa_user;
