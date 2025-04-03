@@ -1,19 +1,19 @@
 import folium
-import pymysql
 import polars as pl
 import math
+import psycopg2
 
 # DB接続設定（環境に合わせて変更してください）
-conn = pymysql.connect(
+conn = psycopg2.connect(
     host='localhost',
-    user='wasa',
+    user='wasa_user',
     password='wasafee',
-    database='wind_analysis_db',
-    charset='utf8mb4'
+    database='windanalysisdb',
+    port='5433'
 )
 
-# SQLからデータを読み込む（measurement_group_id = 1の場合）
-query = "SELECT latitude, longitude, wind_direction, wind_speed FROM wind WHERE measurement_group_id = 1;"
+# SQLからデータを読み込む
+query = "SELECT latitude, longitude, wind_direction, wind_speed FROM weather.wind;"
 with conn.cursor() as cursor:
     cursor.execute(query)
     result = cursor.fetchall()
