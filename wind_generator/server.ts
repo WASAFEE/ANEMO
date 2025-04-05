@@ -15,11 +15,11 @@ app.use(express.static('public'));
 // PostgreSQL 接続プールの設定
 const config = require('./environment/local.json');
 const pool = new Pool({
-  host: config.database.host,
-  user: config.database.user,
-  password: config.database.password,
-  database: config.database.database,
-  port: parseInt(config.database.port)
+  host: config.postgres.host,
+  user: config.postgres.user,
+  password: config.postgres.password,
+  database: config.postgres.dbname,
+  port: parseInt(config.postgres.port)
 });
 
 // POST エンドポイント：風データを保存する

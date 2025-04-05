@@ -11,11 +11,11 @@ with open('environment/local.json') as f:
 
 # データベース接続情報
 DB_CONFIG = {
-    'dbname': env_config['database']['name'],
-    'user': env_config['database']['user'],
-    'password': env_config['database']['password'],
-    'host': env_config['database']['host'],
-    'port': env_config['database']['port']
+    'dbname': env_config['postgres']['dbname'],
+    'user': env_config['postgres']['user'],
+    'password': env_config['postgres']['password'],
+    'host': env_config['postgres']['host'],
+    'port': env_config['postgres']['port']
 }
 
 # 東京駅の緯度経度を設定する

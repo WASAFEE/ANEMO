@@ -1,6 +1,6 @@
 {
-  "database": {
-    "name": "windanalysisdb",
+  "postgres": {
+    "dbname": "windanalysisdb",
     "user": "wasa_user", 
     "password": "wasafee",
     "host": "localhost",

@@ -7,11 +7,11 @@ import json
 with open('./environment/local.json') as f:
     config = json.load(f)
 conn = psycopg2.connect(
-    host=config['database']['host'],
-    user=config['database']['user'], 
-    password=config['database']['password'],
-    database=config['database']['database'],
-    port=config['database']['port']
+    host=config['postgres']['host'],
+    user=config['postgres']['user'], 
+    password=config['postgres']['password'],
+    database=config['postgres']['dbname'],
+    port=config['postgres']['port']
 )
 
 # SQLからデータを読み込む
