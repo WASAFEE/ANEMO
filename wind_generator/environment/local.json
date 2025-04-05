@@ -1,0 +1,9 @@
+{
+  "postgres": {
+    "host": "localhost",
+    "user": "wasa_user",
+    "password": "wasafee",
+    "dbname": "windanalysisdb",
+    "port": 5433
+  }
+}
