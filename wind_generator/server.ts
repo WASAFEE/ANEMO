@@ -13,12 +13,13 @@ app.use(cors());
 app.use(express.static('public'));
 
 // PostgreSQL 接続プールの設定
+const config = require('./environment/local.json');
 const pool = new Pool({
-  host: 'localhost',
-  user: 'wasa_user',
-  password: 'wasafee',
-  database: 'windanalysisdb',
-  port: 5433
+  host: config.database.host,
+  user: config.database.user,
+  password: config.database.password,
+  database: config.database.database,
+  port: parseInt(config.database.port)
 });
 
 // POST エンドポイント：風データを保存する

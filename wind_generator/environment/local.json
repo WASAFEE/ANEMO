@@ -1,0 +1,9 @@
+{
+  "database": {
+    "host": "localhost",
+    "user": "wasa_user",
+    "password": "wasafee",
+    "database": "windanalysisdb",
+    "port": 5433
+  }
+}
