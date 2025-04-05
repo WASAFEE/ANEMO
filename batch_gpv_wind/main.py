@@ -2,17 +2,20 @@ import os
 import subprocess
 from module.met_phiys_module import MetPhysModule
 import pandas as pd
-# import numpy as np
 import psycopg2
-from datetime import datetime
+import json
+
+# environment/local.jsonから設定を読み込む
+with open('environment/local.json') as f:
+    env_config = json.load(f)
 
 # データベース接続情報
 DB_CONFIG = {
-    'dbname': 'windanalysisdb',
-    'user': 'wasa_user',
-    'password': 'wasafee',
-    'host': 'localhost',
-    'port': '5433'
+    'dbname': env_config['database']['name'],
+    'user': env_config['database']['user'],
+    'password': env_config['database']['password'],
+    'host': env_config['database']['host'],
+    'port': env_config['database']['port']
 }
 
 # 東京駅の緯度経度を設定する
