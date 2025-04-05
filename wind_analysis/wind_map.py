@@ -2,14 +2,16 @@ import folium
 import polars as pl
 import math
 import psycopg2
-
-# DB接続設定（環境に合わせて変更してください）
+import json
+# DB接続設定
+with open('./environment/local.json') as f:
+    config = json.load(f)
 conn = psycopg2.connect(
-    host='localhost',
-    user='wasa_user',
-    password='wasafee',
-    database='windanalysisdb',
-    port='5433'
+    host=config['database']['host'],
+    user=config['database']['user'], 
+    password=config['database']['password'],
+    database=config['database']['database'],
+    port=config['database']['port']
 )
 
 # SQLからデータを読み込む
