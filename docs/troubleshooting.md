@@ -40,6 +40,22 @@ uv run python -c "import psycopg2; print(psycopg2.__version__)"
 
 グローバル環境へ個別に追加せず、依存は `uv add` で `pyproject.toml` へ追加し、`uv.lock` と同期して再現可能な状態を維持します。
 
+## MSMデータのダウンロードで証明書エラーが出る
+
+`batch_gpv_wind` で次のようなエラーが表示される場合、取得元サーバーのTLS証明書チェーンを検証できていません。
+
+```text
+curl: (60) SSL certificate problem: unable to get local issuer certificate
+```
+
+表示されたURLが京都大学生存圏研究所のものか確認し、通常は配布サーバーの復旧後に再実行してください。取得元を信頼でき、処理を一時的に続ける必要がある場合だけ、次の明示的な回避オプションを使用できます。
+
+```bash
+uv run main.py --allow-insecure-download
+```
+
+これはTLS証明書の検証を無効化するため常用しないでください。プログラムは取得後にGRIB形式の署名を確認しますが、通信相手の真正性を保証するものではありません。
+
 ## 3000番ポートが使用中
 
 別ポートで起動します。
