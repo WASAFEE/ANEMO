@@ -7,7 +7,7 @@
     "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
     "build": "npm run clean && tsc -p tsconfig.server.json && tsc -p tsconfig.client.json",
     "check": "tsc -p tsconfig.server.json --noEmit && tsc -p tsconfig.client.json --noEmit && tsc -p tsconfig.test.json --noEmit",
-    "test": "tsc -p tsconfig.test.json && node --test dist/test/tests/wind-field.test.js",
+    "test": "tsc -p tsconfig.test.json && node --test dist/test/tests/wind-field.test.js dist/test/tests/public-guide.test.js",
     "start": "npm run build && node dist/server/server.js",
     "start:built": "node dist/server/server.js"
   },

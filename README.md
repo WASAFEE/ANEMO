@@ -13,6 +13,12 @@ ANEMOは **WASA Flight Environment Emulator（WASAFEE）が独自に開発して
 > [!CAUTION]
 > ANEMOが作成・表示する風場は、設計や検討を補助するデータです。実機の安全性、飛行可否、気象状況を単独で保証しません。実機に関わる判断では、実測、公式気象情報、別手法による検証、責任者の確認を行ってください。
 
+## 風場エディターの画面
+
+![ANEMO風場エディター。左側に操作欄、右側の地図に入力した風と補間結果が表示されている](wind_generator/public/images/anemo-wind-field-editor.webp)
+
+左側で風場名・地図操作・保存方法を選び、右側の地図で風を配置します。緑色が入力した風、青色が補間結果です。画像は説明用の合成データを表示しています。地図 © OpenStreetMap contributors
+
 ## 最短で風場エディターを使う
 
 Node.js 20以上とGitを用意し、次のコマンドを実行します。
@@ -69,6 +75,8 @@ npm start
 | `wind_analysis` | DB内の風をFoliumでHTML地図に変換 | 保存済みデータの分析時のみ |
 | `batch_gpv_wind` | MSM GRIB2の取得・抽出・DB保存 | 気象データ取込み時のみ |
 | `docs` | 利用・開発・公開方針の説明書 | 参照用 |
+
+Pythonコンポーネントは `pyproject.toml` と `uv.lock` で依存を管理します。`uv sync` で環境を同期し、`uv run` で実行します。activate操作は不要です。具体的なコマンドは各コンポーネントのREADMEを参照してください。
 
 ## 単位と座標系
 

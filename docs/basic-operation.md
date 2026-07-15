@@ -2,6 +2,10 @@
 
 ANEMOの風場エディターは、少数の制御点を地図上へ置き、その間を連続的に補間して風場を作ります。
 
+![ANEMO風場エディターの操作画面。左に操作欄、右に風場を作る地図がある](../wind_generator/public/images/anemo-wind-field-editor.webp)
+
+画面左側で操作を選び、右側の地図へ風を配置します。画像は説明用の合成データです。地図 © OpenStreetMap contributors
+
 ## 起動と終了
 
 ```bash
