@@ -76,6 +76,8 @@ npm start
 | `batch_gpv_wind` | MSM GRIB2の取得・抽出・DB保存 | 気象データ取込み時のみ |
 | `docs` | 利用・開発・公開方針の説明書 | 参照用 |
 
+Pythonコンポーネントの仮想環境は `uv` で作成し、各 `requirements.txt` から同期します。具体的なコマンドは各コンポーネントのREADMEを参照してください。
+
 ## 単位と座標系
 
 - 位置: WGS84の緯度・経度 `[degree]`

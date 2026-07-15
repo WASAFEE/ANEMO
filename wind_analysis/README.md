@@ -6,13 +6,13 @@ PostgreSQLの `weather.wind` を読み、Foliumで `wind_map.html` を生成し�
 
 1. [データベース](../docs/database.md)のセットアップとマイグレーションが完了している。
 2. エディターまたはテストデータから `weather.wind` に1件以上保存されている。
-3. Python 3が利用できる。
+3. [`uv`](https://docs.astral.sh/uv/getting-started/installation/)が利用できる。
 
 ## セットアップ
 
 ```bash
 cd wind_analysis
-python -m venv .venv
+uv venv --python 3.12
 ```
 
 macOS / Linux:
@@ -24,13 +24,13 @@ source .venv/bin/activate
 Windows PowerShell:
 
 ```powershell
-.venv\Scripts\Activate.ps1
+.\.venv\Scripts\Activate.ps1
 ```
 
-依存パッケージを入れ、ローカル設定を作ります。
+依存パッケージを `requirements.txt` と同じ状態に揃え、ローカル設定を作ります。`uv` はカレントディレクトリの `.venv` を自動検出します。
 
 ```bash
-python -m pip install -r requirements.txt
+uv pip sync requirements.txt
 cp environment/local.example.json environment/local.json
 ```
 

@@ -123,7 +123,17 @@ PR本文には次を含めます。
 
 ## 依存関係と外部要素
 
-新しい依存を追加するときは、公式配布元、保守状況、ライセンス、ブラウザ送信先、再配布物を確認します。不要な依存を増やさず、`package-lock.json` やrequirementsを更新します。
+Pythonコンポーネントの仮想環境と依存パッケージは `uv` で管理します。対象コンポーネント内で次を実行します。
+
+```bash
+uv venv --python 3.12
+source .venv/bin/activate
+uv pip sync requirements.txt
+```
+
+Windows PowerShellでは、有効化に `.\.venv\Scripts\Activate.ps1` を使用します。`.venv` はローカル専用で、Gitへコミットしません。
+
+新しい依存を追加するときは、公式配布元、保守状況、ライセンス、ブラウザ送信先、再配布物を確認します。不要な依存を増やさず、`package-lock.json` や `requirements.txt` を更新します。Pythonコードへimportを追加した場合は、クリーンな `uv` 環境でimport確認も行います。
 
 画像、地図、気象データを追加するときは、出典、作者・提供者、利用条件、加工内容、再配布可否を同じPRへ記録します。
 

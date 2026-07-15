@@ -49,5 +49,28 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.9.25"
+          enable-cache: true
+          cache-dependency-glob: "**/requirements*.txt"
+
+      - name: Install batch dependencies
+        run: |
+          uv venv batch_gpv_wind/.venv --python 3.12
+          uv pip sync --python batch_gpv_wind/.venv/bin/python batch_gpv_wind/requirements.txt
+
+      - name: Check batch imports
+        run: batch_gpv_wind/.venv/bin/python -c "import numpy, pandas, psycopg2, pygrib"
+
+      - name: Install analysis dependencies
+        run: |
+          uv venv wind_analysis/.venv --python 3.12
+          uv pip sync --python wind_analysis/.venv/bin/python wind_analysis/requirements.txt
+
+      - name: Check analysis imports
+        run: wind_analysis/.venv/bin/python -c "import folium, numpy, psycopg2"
+
       - name: Compile Python sources
         run: python -m compileall -q wind_analysis batch_gpv_wind

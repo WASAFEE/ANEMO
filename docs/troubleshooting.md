@@ -20,6 +20,38 @@ Node.js 20以上をインストールし、ターミナルを開き直します�
 
 `package-lock.json` は再現性のためGit管理しています。理由なく削除しないでください。
 
+## Pythonで `ModuleNotFoundError` が出る
+
+`batch_gpv_wind` または `wind_analysis` の対象ディレクトリで、`uv` が作成した仮想環境と実行中のPythonを確認します。
+
+```bash
+uv --version
+python -c "import sys; print(sys.executable)"
+uv pip sync requirements.txt
+```
+
+`sys.executable` が対象ディレクトリの `.venv` を指していない場合は、仮想環境を有効化します。
+
+macOS / Linux:
+
+```bash
+source .venv/bin/activate
+```
+
+Windows PowerShell:
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+```
+
+`batch_gpv_wind` のDBドライバーだけを確認する場合:
+
+```bash
+python -c "import psycopg2; print(psycopg2.__version__)"
+```
+
+グローバル環境へ個別に追加せず、`requirements.txt` を更新・同期して再現可能な状態を維持します。
+
 ## 3000番ポートが使用中
 
 別ポートで起動します。
