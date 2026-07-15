@@ -1,7 +1,7 @@
 {
   "postgres": {
     "dbname": "windanalysisdb",
-    "user": "wasa_user", 
+    "user": "wasa_user",
     "password": "wasafee",
     "host": "localhost",
     "port": "5433"

@@ -1,33 +1,64 @@
-# SQL に保存した風向・風速データを Folium でマップ表示
+# 保存した風データをHTML地図へ表示する
 
-このドキュメントでは、SQL に保存した風向・風速のデータを Python の**Polars**と**Folium**を使って地図上に矢印表示する方法を紹介します。
+PostgreSQLの `weather.wind` を読み、Foliumで `wind_map.html` を生成します。
 
-## ⓪ PostgreSQL のインストール
+## 前提
 
-```bash
-brew install postgresql@14
-```
+1. [データベース](../docs/database.md)のセットアップとマイグレーションが完了している。
+2. エディターまたはテストデータから `weather.wind` に1件以上保存されている。
+3. Python 3が利用できる。
 
-## ① 仮想環境の立ち上げと必要なライブラリのインストール
+## セットアップ
 
 ```bash
 cd wind_analysis
-source .venv/bin/activate
-pip install -r requirements.txt
+python -m venv .venv
 ```
 
-## ② Python による地図表示コード
+macOS / Linux:
 
-## ③ 表示結果
+```bash
+source .venv/bin/activate
+```
 
-コードを実行すると`wind_map.html`というファイルが生成されます。このファイルをブラウザで開くと、次のようなマップが表示されます。
+Windows PowerShell:
 
-- **赤い丸**が測定した地点
-- **青色の線**が風の吹く方向と強さを示しています（矢印が長いほど風が強いことを示します）。
+```powershell
+.venv\Scripts\Activate.ps1
+```
+
+依存パッケージを入れ、ローカル設定を作ります。
+
+```bash
+python -m pip install -r requirements.txt
+cp environment/local.example.json environment/local.json
+```
+
+Windows PowerShellのコピー:
+
+```powershell
+Copy-Item environment/local.example.json environment/local.json
+```
+
+## 実行
+
+```bash
+python wind_map.py
+```
+
+同じディレクトリに `wind_map.html` が生成されます。ブラウザで開いて確認します。
+
+- 赤い丸: 保存地点
+- 青い線: 保存された向きと風速
 
 ![風向・風速マップの表示例](../assets/wind_map.png)
 
-## 備考
+## 単位と制約
 
-- 実際のデータベース接続情報はご自身の環境に合わせて修正してください。
-- 表示スケールや矢印のデザインなどは自由に調整可能です。
+- 緯度・経度: WGS84 degree
+- 風速: m/s
+- 新規ANEMOデータの `wind_direction`: 真北0°、時計回りの吹いていく向き
+
+旧版データは向きの定義が不明な可能性があります。実測・設計用途では元データの定義を確認してください。DBが空の場合は地図中心を計算できないため、先にデータを保存します。
+
+DB設定、生成HTML、資格情報はGitへコミットしないでください。

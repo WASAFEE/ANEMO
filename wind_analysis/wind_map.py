@@ -3,6 +3,9 @@ import polars as pl
 import math
 import psycopg2
 import json
+
+DISPLAY_SECONDS = 60.0
+METERS_PER_DEGREE_LATITUDE = 111_320.0
 # DB接続設定
 with open('./environment/local.json') as f:
     config = json.load(f)
@@ -18,9 +21,12 @@ conn = psycopg2.connect(
 query = "SELECT latitude, longitude, wind_direction, wind_speed FROM weather.wind;"
 with conn.cursor() as cursor:
     cursor.execute(query)
-    result = cursor.fetchall()
+result = cursor.fetchall()
 
 conn.close()
+
+if not result:
+    raise SystemExit("weather.wind に表示できるデータがありません。先に風データを保存してください。")
 
 # PolarsのDataFrameに変換
 df = pl.DataFrame(result, schema=['latitude', 'longitude', 'wind_direction', 'wind_speed'])
@@ -33,11 +39,14 @@ m = folium.Map(location=map_center, zoom_start=14)
 
 # 矢印を地図上に描画する関数
 def add_wind_arrow(map_obj, lat, lon, direction_deg, speed):
-    # 表示用スケール（必要に応じて調整）
-    length_scale = 0.001
-    rad = math.radians(direction_deg - 90)
-    end_lat = lat + speed * length_scale * math.sin(rad)
-    end_lon = lon + speed * length_scale * math.cos(rad)
+    # direction_deg は真北0°、時計回りの「吹いていく向き」。
+    # 60秒間に移動する距離を地図表示用の矢印長へ変換する。
+    rad = math.radians(direction_deg)
+    north_mps = speed * math.cos(rad)
+    east_mps = speed * math.sin(rad)
+    end_lat = lat + north_mps * DISPLAY_SECONDS / METERS_PER_DEGREE_LATITUDE
+    longitude_scale = METERS_PER_DEGREE_LATITUDE * max(math.cos(math.radians(lat)), 1e-6)
+    end_lon = lon + east_mps * DISPLAY_SECONDS / longitude_scale
 
     # 風向矢印を地図に追加
     folium.PolyLine(
@@ -45,7 +54,7 @@ def add_wind_arrow(map_obj, lat, lon, direction_deg, speed):
         color="blue",
         weight=3,
         opacity=0.8,
-        tooltip=f'風向: {direction_deg}°, 風速: {speed} m/s'
+        tooltip=f'吹いていく向き: {direction_deg}°, 風速: {speed} m/s'
     ).add_to(map_obj)
 
     # 測定点マーカーを追加
