@@ -12,25 +12,14 @@ PostgreSQLの `weather.wind` を読み、Foliumで `wind_map.html` を生成し�
 
 ```bash
 cd wind_analysis
-uv venv --python 3.12
+uv sync
 ```
 
-macOS / Linux:
+`uv sync` はPython 3.12と `.venv` を必要に応じて用意し、`pyproject.toml` と `uv.lock` に従って依存パッケージを同期します。activate操作は不要です。
+
+ローカル設定を作ります。
 
 ```bash
-source .venv/bin/activate
-```
-
-Windows PowerShell:
-
-```powershell
-.\.venv\Scripts\Activate.ps1
-```
-
-依存パッケージを `requirements.txt` と同じ状態に揃え、ローカル設定を作ります。`uv` はカレントディレクトリの `.venv` を自動検出します。
-
-```bash
-uv pip sync requirements.txt
 cp environment/local.example.json environment/local.json
 ```
 
@@ -43,7 +32,7 @@ Copy-Item environment/local.example.json environment/local.json
 ## 実行
 
 ```bash
-python wind_map.py
+uv run wind_map.py
 ```
 
 同じディレクトリに `wind_map.html` が生成されます。ブラウザで開いて確認します。

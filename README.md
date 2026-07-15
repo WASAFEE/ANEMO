@@ -76,7 +76,7 @@ npm start
 | `batch_gpv_wind` | MSM GRIB2の取得・抽出・DB保存 | 気象データ取込み時のみ |
 | `docs` | 利用・開発・公開方針の説明書 | 参照用 |
 
-Pythonコンポーネントの仮想環境は `uv` で作成し、各 `requirements.txt` から同期します。具体的なコマンドは各コンポーネントのREADMEを参照してください。
+Pythonコンポーネントは `pyproject.toml` と `uv.lock` で依存を管理します。`uv sync` で環境を同期し、`uv run` で実行します。activate操作は不要です。具体的なコマンドは各コンポーネントのREADMEを参照してください。
 
 ## 単位と座標系
 

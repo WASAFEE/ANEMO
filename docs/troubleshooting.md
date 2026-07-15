@@ -22,35 +22,23 @@ Node.js 20以上をインストールし、ターミナルを開き直します�
 
 ## Pythonで `ModuleNotFoundError` が出る
 
-`batch_gpv_wind` または `wind_analysis` の対象ディレクトリで、`uv` が作成した仮想環境と実行中のPythonを確認します。
+`batch_gpv_wind` または `wind_analysis` の対象ディレクトリで、プロジェクト環境を同期してから `uv run` が使うPythonを確認します。
 
 ```bash
 uv --version
-python -c "import sys; print(sys.executable)"
-uv pip sync requirements.txt
+uv sync
+uv run python -c "import sys; print(sys.executable)"
 ```
 
-`sys.executable` が対象ディレクトリの `.venv` を指していない場合は、仮想環境を有効化します。
-
-macOS / Linux:
-
-```bash
-source .venv/bin/activate
-```
-
-Windows PowerShell:
-
-```powershell
-.\.venv\Scripts\Activate.ps1
-```
+`sys.executable` は対象ディレクトリの `.venv` を指します。activate操作は不要です。`uv lock --check` で `pyproject.toml` と `uv.lock` の整合も確認できます。
 
 `batch_gpv_wind` のDBドライバーだけを確認する場合:
 
 ```bash
-python -c "import psycopg2; print(psycopg2.__version__)"
+uv run python -c "import psycopg2; print(psycopg2.__version__)"
 ```
 
-グローバル環境へ個別に追加せず、`requirements.txt` を更新・同期して再現可能な状態を維持します。
+グローバル環境へ個別に追加せず、依存は `uv add` で `pyproject.toml` へ追加し、`uv.lock` と同期して再現可能な状態を維持します。
 
 ## 3000番ポートが使用中
 

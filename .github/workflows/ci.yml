@@ -54,23 +54,19 @@ jobs:
         with:
           version: "0.9.25"
           enable-cache: true
-          cache-dependency-glob: "**/requirements*.txt"
+          cache-dependency-glob: "**/uv.lock"
 
       - name: Install batch dependencies
-        run: |
-          uv venv batch_gpv_wind/.venv --python 3.12
-          uv pip sync --python batch_gpv_wind/.venv/bin/python batch_gpv_wind/requirements.txt
+        run: uv sync --project batch_gpv_wind --locked
 
       - name: Check batch imports
-        run: batch_gpv_wind/.venv/bin/python -c "import numpy, pandas, psycopg2, pygrib"
+        run: uv run --project batch_gpv_wind --locked python -c "import numpy, pandas, psycopg2, pygrib"
 
       - name: Install analysis dependencies
-        run: |
-          uv venv wind_analysis/.venv --python 3.12
-          uv pip sync --python wind_analysis/.venv/bin/python wind_analysis/requirements.txt
+        run: uv sync --project wind_analysis --locked
 
       - name: Check analysis imports
-        run: wind_analysis/.venv/bin/python -c "import folium, numpy, psycopg2"
+        run: uv run --project wind_analysis --locked python -c "import folium, polars, psycopg2"
 
       - name: Compile Python sources
         run: python -m compileall -q wind_analysis batch_gpv_wind

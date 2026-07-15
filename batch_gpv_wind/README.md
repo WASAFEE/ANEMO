@@ -8,7 +8,6 @@
 ## 前提
 
 - [`uv`](https://docs.astral.sh/uv/getting-started/installation/)
-- Python 3.12（未導入の場合も `uv` で取得できます）
 - `pygrib` が必要とするネイティブライブラリ
 - 起動・マイグレーション済みのANEMO PostgreSQL
 - 外部アーカイブへ接続できるネットワーク
@@ -17,25 +16,14 @@
 
 ```bash
 cd batch_gpv_wind
-uv venv --python 3.12
+uv sync
 ```
 
-macOS / Linux:
+`uv sync` はPython 3.12と `.venv` を必要に応じて用意し、`pyproject.toml` と `uv.lock` に従って依存パッケージを同期します。activate操作は不要です。
+
+ローカル設定を作ります。
 
 ```bash
-source .venv/bin/activate
-```
-
-Windows PowerShell:
-
-```powershell
-.\.venv\Scripts\Activate.ps1
-```
-
-依存パッケージを `requirements.txt` と同じ状態に揃え、ローカル設定を作ります。`uv` はカレントディレクトリの `.venv` を自動検出します。
-
-```bash
-uv pip sync requirements.txt
 cp environment/local.example.json environment/local.json
 ```
 
@@ -58,10 +46,10 @@ Copy-Item environment/local.example.json environment/local.json
 ## 実行
 
 ```bash
-python main.py
+uv run main.py
 ```
 
-`ModuleNotFoundError` が出た場合は、同じディレクトリで `uv pip sync requirements.txt` を再実行し、`python -c "import psycopg2"` が成功することを確認してください。
+`ModuleNotFoundError` が出た場合は、同じディレクトリで `uv sync` を再実行し、`uv run python -c "import psycopg2"` が成功することを確認してください。
 
 ダウンロードした `*.bin` は `msm` に保存され、Git管理対象外です。標準出力のデータフレームとDB保存完了メッセージを確認します。
 
