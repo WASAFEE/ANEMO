@@ -3,38 +3,165 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>風向・風速入力インターフェース</title>
-  <!-- Leaflet の CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  <style>
-    #map {
-      width: 100%;
-      height: 500px;
-    }
-    body {
-      font-family: Arial, sans-serif;
-      padding: 10px;
-    }
-    #info {
-      margin-top: 10px;
-    }
-    .input-group {
-      margin: 10px 0;
-    }
-  </style>
+  <meta name="description" content="地図上で連続的に変化する風ベクトル場を作成するWASAオリジナルのANEMOエディター">
+  <title>ANEMO 風場エディター</title>
+  <link rel="stylesheet" href="/vendor/leaflet.css">
+  <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <h1>風向・風速入力インターフェース</h1>
-  <div class="input-group">
-    <label for="measurement-group-id">測定グループID:</label>
-    <input type="number" id="measurement-group-id" required min="1" value="1">
-  </div>
-  <p>マップ上でクリック＆ドラッグして、風データを入力してください。</p>
-  <div id="map" style="height: 600px;"></div>
-  <div id="info"></div>
-  <!-- Leaflet の JS -->
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <!-- クライアント側スクリプト -->
-  <script src="scripts.js"></script>
+  <header class="site-header">
+    <div>
+      <p class="eyebrow">WASA Flight Environment Emulator</p>
+      <h1>ANEMO 風場エディター</h1>
+      <p class="subtitle">地図上に風を置き、場所によって連続的に変わる風ベクトル場を作成します。</p>
+    </div>
+    <div class="header-actions">
+      <span class="original-badge">WASAオリジナル</span>
+      <a href="https://github.com/WASAFEE/ANEMO/blob/develop/docs/getting-started.md"
+         target="_blank" rel="noreferrer">使い方</a>
+    </div>
+  </header>
+
+  <noscript>
+    <p class="noscript">この画面を使うにはJavaScriptを有効にしてください。</p>
+  </noscript>
+
+  <main>
+    <div id="status" class="status status-info" role="status" aria-live="polite">
+      読み込み中です。
+    </div>
+
+    <div class="workspace">
+      <aside class="sidebar" aria-label="風場の設定">
+        <section class="panel">
+          <h2>1. 風場の名前</h2>
+          <label for="field-name">名前</label>
+          <input id="field-name" type="text" maxlength="100" value="新しい風場">
+        </section>
+
+        <section class="panel">
+          <h2>2. 地図を操作</h2>
+          <div class="segmented" role="group" aria-label="地図の操作モード">
+            <button id="draw-mode" type="button" aria-pressed="true">風を追加</button>
+            <button id="pan-mode" type="button" aria-pressed="false">地図を移動</button>
+          </div>
+          <p id="mode-help" class="help-text">
+            地図上で、風が吹いていく向きへドラッグします。矢印が長いほど風速が大きくなります。
+          </p>
+          <div class="button-row">
+            <button id="undo" type="button" class="secondary">元に戻す</button>
+            <button id="redo" type="button" class="secondary">やり直す</button>
+            <button id="clear" type="button" class="danger-ghost">すべて消す</button>
+          </div>
+        </section>
+
+        <section id="selected-panel" class="panel" hidden>
+          <h2>3. 選択中の風</h2>
+          <dl class="position-readout">
+            <div><dt>緯度</dt><dd id="selected-latitude">-</dd></div>
+            <div><dt>経度</dt><dd id="selected-longitude">-</dd></div>
+          </dl>
+          <div class="field-grid">
+            <div>
+              <label for="selected-speed">水平風速 <span>m/s</span></label>
+              <input id="selected-speed" type="number" min="0" max="30" step="0.1">
+            </div>
+            <div>
+              <label for="selected-direction">吹いていく向き <span>°</span></label>
+              <input id="selected-direction" type="number" min="0" max="359.9" step="0.1">
+            </div>
+            <div>
+              <label for="selected-altitude">高度 <span>m</span></label>
+              <input id="selected-altitude" type="number" min="-1000" max="100000" step="1">
+            </div>
+          </div>
+          <p class="help-text">向きは真北が0°、東が90°です。矢印は風が吹いていく向きを示します。</p>
+          <button id="delete-selected" type="button" class="danger-ghost">この風を削除</button>
+        </section>
+
+        <section class="panel">
+          <h2>4. 補間とファイル</h2>
+          <label for="interpolation-power">補間の局所性</label>
+          <select id="interpolation-power">
+            <option value="1">弱い（広く平均）</option>
+            <option value="2" selected>標準</option>
+            <option value="3">強い</option>
+            <option value="4">最も強い（近傍を重視）</option>
+          </select>
+          <p class="help-text">制御点の間は逆距離加重（IDW）で連続的に補間します。</p>
+          <div class="button-stack">
+            <button id="example" type="button" class="secondary">例を読み込む</button>
+            <button id="export-json" type="button">JSONを書き出す</button>
+            <button id="export-csv" type="button" class="secondary">CSVを書き出す</button>
+            <button id="import-json" type="button" class="secondary">JSONを読み込む</button>
+            <input id="import-file" type="file" accept="application/json,.json" hidden>
+          </div>
+        </section>
+
+        <details class="panel database-panel">
+          <summary>データベースへ保存（任意）</summary>
+          <p id="database-status" class="help-text">接続状態を確認しています。</p>
+          <label for="measurement-group-id">測定グループID</label>
+          <input id="measurement-group-id" type="number" min="1" max="2147483647" step="1">
+          <label for="measured-at">日時</label>
+          <input id="measured-at" type="datetime-local" step="1">
+          <button id="save-database" type="button">データベースへ保存</button>
+        </details>
+      </aside>
+
+      <section class="map-panel" aria-label="風場マップ">
+        <div class="map-toolbar">
+          <div>
+            <strong id="point-count">制御点 0点</strong>
+            <span>矢印の向き：風が吹いていく方向</span>
+          </div>
+          <div class="legend" aria-label="凡例">
+            <span><i class="legend-control"></i>入力した風</span>
+            <span><i class="legend-preview"></i>補間結果</span>
+          </div>
+        </div>
+        <div id="map" aria-label="風を入力する地図"></div>
+        <p class="map-note">
+          地図画像はOpenStreetMapから取得します。作成した風場は、書き出しまたはDB保存を行うまでこのブラウザ内だけに保存されます。
+        </p>
+      </section>
+    </div>
+
+    <section class="table-panel" aria-labelledby="control-point-heading">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Control points</p>
+          <h2 id="control-point-heading">入力した風</h2>
+        </div>
+        <p>行を選ぶと地図上の矢印を編集できます。</p>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">緯度</th>
+              <th scope="col">経度</th>
+              <th scope="col">水平風速</th>
+              <th scope="col">吹いていく向き</th>
+              <th scope="col">北向き成分</th>
+              <th scope="col">東向き成分</th>
+            </tr>
+          </thead>
+          <tbody id="point-table-body">
+            <tr><td colspan="7" class="empty-cell">風はまだありません。</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p><strong>ANEMO</strong> is an original project developed by WASA Flight Environment Emulator (WASAFEE).</p>
+    <p>設計・飛行可否・安全性の判断には、測定、別手法での検証、責任者の確認を併用してください。</p>
+  </footer>
+
+  <script src="/vendor/leaflet.js"></script>
+  <script type="module" src="/assets/scripts.js"></script>
 </body>
 </html>

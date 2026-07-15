@@ -1,124 +1,61 @@
-# 風向・風速データのテーブル設計と使い方
+# 風データ用PostgreSQL
 
-## 環境構築
+Docker ComposeでローカルPostgreSQLを起動し、Flywayで `weather.wind` を管理します。初めて使う場合は、全体手順の[データベース](../docs/database.md)を参照してください。
 
-### Docker と flyway を利用した DB 環境の構築
-
-このプロジェクトでは、Docker Compose を使用して PostgreSQL のデータベース環境を構築します。  
-データベースのマイグレーションは flyway を使用して管理します。
-
-#### ローカル DB 環境構築
-
-##### ローカル DB サーバーの立ち上げ
+## 最短手順
 
 ```bash
-$ docker compose -f docker-compose-db.yml build
-$ docker compose -f docker-compose-db.yml up -d
+docker compose -f docker-compose-db.yml build
+docker compose -f docker-compose-db.yml up -d
+make flyway_migrate_all
 ```
 
-##### ローカル DB サーバーの停止
+停止:
 
 ```bash
-$ docker compose -f docker-compose-db.yml down
+docker compose -f docker-compose-db.yml down
 ```
 
-#### マイグレーションの実行
+## 主なMakeターゲット
 
 ```bash
-$ make flyway_migrate_all
-```
-
-DB の一部にのみマイグレーションを実行したい場合は、他のコマンドを使用してください。
-コマンド一覧は Makefile 内に記載されています。
-
-> **Note**
-> データを migrate しなおす場合、DB の実態である db/data ファイルを削除し、dockerを立ち上げ直してください。
-
-## Docker Save / Load
-
-### Docker Saving
-
-preparation
-
-```bash
-$ docker compose build
-$ docker images
-```
-
-Docker image save
-
-```bash
-$ docker save windanalysis_db_migration -o windanalysis_db_migration.`date "+%Y%m%d_%H%M%S"`.tar
-$ file windanalysis_db_migration.YYYYmmdd_HMS.tar
-```
-
-Delete current docker image
-
-```bash
-$ docker rmi windanalysis_db_migration
-```
-
-### Docker Loading
-
-```bash
-$ docker load -i windanalysis_db_migration.YYYYmmdd_HMS.tar
-$ docker images
-```
-
-## ルール
-
-### file 命名規則
-
-- prefix
-  - "V" で Versioned Migration 、"U" で Undo Migration 、 "R" で Repeat Migration を示します。
-- version
-  - バージョン番号は一意になるように設定します。 "."(ピリオド) で区切る文字列で定義します。 通常は整数で定義するようです。
-- separator
-  - "\_\_"(アンダースコア 2 つ) 固定です。
-- description
-  - 該当バージョンの修正概要を記載します。 文字は " "(空白) または "\_"(アンダースコア) で結合します。
-- suffix
-  - ".sql" 固定です。
-
-### create schema
-
-```
-make flyway_migrate_core
-```
-
-### insert test data
-
-```
+make help
+make flyway_migrate_all
 make flyway_migrate_testdata_all
+make flyway_info_windanalysisdb
+make flyway_repair_windanalysisdb
 ```
 
-## データ取得例
+適用済みマイグレーションSQLを変更するとFlywayのチェックサムが一致しなくなります。変更は新しい版番号のファイルとして追加してください。
 
-DBeaver などで localhost:5433 に接続してください。
+## ローカル接続
 
-- データベース名: windanalysisdb
-- ユーザー名: postgres
-- パスワード: example
+- host: `127.0.0.1`
+- port: `5433`
+- database: `windanalysisdb`
+- application user: `wasa_user`
 
-### データ取得クエリ
+サンプル資格情報はローカルDocker専用です。DBポートは `127.0.0.1` にだけバインドします。共有・本番環境では固有の強い資格情報、最小権限、ネットワーク分離、TLSを設定してください。
 
-- 特定グループ（`measurement_group_id = 1`）のデータ取得
+## マイグレーション命名
+
+```text
+V<version>__<description>.sql
+```
+
+- `V`: Versioned Migration
+- version: 一意な番号
+- 区切り: アンダースコア2個
+- description: 変更内容
+- suffix: `.sql`
+
+## データ確認例
 
 ```sql
 SELECT *
-FROM wind
-WHERE measurement_group_id = 1;
+FROM weather.wind
+WHERE measurement_group_id = 1
+ORDER BY measured_at, id;
 ```
 
-- 最新の測定グループのデータ取得
-
-```sql
-SELECT *
-FROM wind
-WHERE measurement_group_id = (
-    SELECT measurement_group_id
-    FROM wind
-    ORDER BY measured_at DESC
-    LIMIT 1
-);
-```
+既存データの `wind_direction` は旧版で定義が明示されていない可能性があります。新規ANEMO APIは真北0°、時計回りの吹いていく向きを保存します。

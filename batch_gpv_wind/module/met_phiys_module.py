@@ -71,7 +71,9 @@ class MetPhysModule :
                                     wdir = 0.0
                                     wspd = 0.0
                             else :
-                                    wdir = math.degrees(math.atan2(-u_pt, -v_pt))
+                                    # Uは東向き、Vは北向き。ANEMOでは真北0°、
+                                    # 時計回りの「吹いていく向き」を保存する。
+                                    wdir = math.degrees(math.atan2(u_pt, v_pt))
                                     if wdir < 0 :
                                             wdir = wdir + 360.0
                                     wspd = math.sqrt(u_pt * u_pt + v_pt * v_pt)

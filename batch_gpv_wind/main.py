@@ -29,7 +29,7 @@ day = "05"
 time = "0000"
 # 2024/02/05 00:00(UTC 09:00)の地上データをダウンロードする
 cwd = f"{os.getcwd()}/msm"
-url_surf = f'http://database.rish.kyoto-u.ac.jp/arch/jmadata/data/gpv/original/{year}/{month}/{day}/Z__C_RJTD_{year}{month}{day}{time}00_MSM_GPV_Rjp_Lsurf_FH00-15_grib2.bin'
+url_surf = f'https://database.rish.kyoto-u.ac.jp/arch/jmadata/data/gpv/original/{year}/{month}/{day}/Z__C_RJTD_{year}{month}{day}{time}00_MSM_GPV_Rjp_Lsurf_FH00-15_grib2.bin'
 print(f"ダウンロードURL: {url_surf}")
 
 # ファイルが存在する場合は削除
@@ -59,12 +59,14 @@ df = pd.DataFrame({"ValidTime":vt, "WindDirection":wdir, "WindSpeed":wspd})
 print(df)
 
 # データベースに接続してデータを挿入
+conn = None
+cur = None
 try:
     conn = psycopg2.connect(**DB_CONFIG)
     cur = conn.cursor()
 
     # 測定グループIDを生成（現在のタイムスタンプを使用）
-    measurement_group_id = "0"
+    measurement_group_id = 1
     
     # データを挿入
     for _, row in df.iterrows():
@@ -86,10 +88,11 @@ try:
     
 except Exception as e:
     print(f"データベース操作中にエラーが発生しました: {str(e)}")
-    conn.rollback()
+    if conn is not None:
+        conn.rollback()
     
 finally:
-    if 'cur' in locals():
+    if cur is not None:
         cur.close()
-    if 'conn' in locals():
+    if conn is not None:
         conn.close()

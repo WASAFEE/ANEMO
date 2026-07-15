@@ -1,5 +1,14 @@
 .DS_Store
 
+# Local settings and generated data
+**/environment/local.json
+!**/environment/local.example.json
+wind_database/db/data/
+wind_analysis/wind_map.html
+batch_gpv_wind/msm/*.bin
+**/__pycache__/
+*.py[cod]
+
 # Logs
 logs
 *.log
