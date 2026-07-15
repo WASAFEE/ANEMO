@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ANEMO風場エディターを初めて使う人向けの画像付き操作ガイド">
+  <title>使い方 | ANEMO 風場エディター</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/guide.css">
+</head>
+<body>
+  <header class="site-header">
+    <div>
+      <p class="eyebrow">ANEMO QUICK GUIDE</p>
+      <h1>風場エディターの使い方</h1>
+      <p class="subtitle">例を読み込み、自分の風を追加して、JSONへ保存するまでを説明します。</p>
+    </div>
+    <div class="header-actions">
+      <span class="original-badge">WASAオリジナル</span>
+      <a href="./">エディターへ戻る</a>
+    </div>
+  </header>
+
+  <main class="guide-main">
+    <nav class="guide-nav" aria-label="このページの目次">
+      <strong>このページの内容</strong>
+      <a href="#screen">画面の見方</a>
+      <a href="#first-field">最初の風場</a>
+      <a href="#edit">編集と保存</a>
+      <a href="#direction">向きと単位</a>
+    </nav>
+
+    <section id="screen" class="guide-section">
+      <p class="eyebrow">SCREEN</p>
+      <h2>画面の見方</h2>
+      <p>左側で名前・操作方法・保存形式を選び、右側の地図で風を配置します。緑色が入力した風、青色が制御点から計算した補間結果です。</p>
+      <figure class="guide-screenshot">
+        <a href="/images/anemo-wind-field-editor.webp" aria-label="ANEMO風場エディターの画面を原寸で開く">
+          <img src="/images/anemo-wind-field-editor.webp"
+               width="2048" height="1043"
+               alt="ANEMO風場エディター。左側に風場名、地図操作、補間とファイルの設定があり、右側の地図に緑の入力風と青の補間結果が表示されている">
+        </a>
+        <figcaption>「例を読み込む」で説明用の合成データを表示した画面です。画像を選ぶと拡大できます。地図 © OpenStreetMap contributors</figcaption>
+      </figure>
+
+      <div class="screen-points">
+        <article>
+          <span>1</span>
+          <h3>風場の名前</h3>
+          <p>書き出すファイルを識別できる名前を付けます。</p>
+        </article>
+        <article>
+          <span>2</span>
+          <h3>地図を操作</h3>
+          <p>風の追加と地図移動を切り替え、操作を元に戻せます。</p>
+        </article>
+        <article>
+          <span>3</span>
+          <h3>選択中の風</h3>
+          <p>緑の矢印を選ぶと、風速・向き・高度の編集欄が現れます。</p>
+        </article>
+        <article>
+          <span>4</span>
+          <h3>補間とファイル</h3>
+          <p>例の読込み、補間設定、JSON・CSVの入出力を行います。</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="first-field" class="guide-section">
+      <p class="eyebrow">FIRST FIELD</p>
+      <h2>まずは3ステップで試す</h2>
+      <ol class="step-list">
+        <li>
+          <strong>例を表示する</strong>
+          <p>左側の「例を読み込む」を押します。緑の矢印が4本と、青の補間矢印が表示されれば正常です。これは説明用の合成データで、実測値ではありません。</p>
+        </li>
+        <li>
+          <strong>自分の風を追加する</strong>
+          <p>「風を追加」を選び、地図上で始点を押したまま、風が吹いていく向きへドラッグして離します。矢印が長いほど風速が大きくなります。</p>
+        </li>
+        <li>
+          <strong>JSONへ保存する</strong>
+          <p>「JSONを書き出す」を押します。保存された <code>*.anemo.json</code> は、後から「JSONを読み込む」で編集を再開できます。</p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="edit" class="guide-section">
+      <p class="eyebrow">EDIT &amp; SAVE</p>
+      <h2>編集・移動・保存</h2>
+      <div class="guide-table-wrap">
+        <table class="guide-table">
+          <thead>
+            <tr><th scope="col">やりたいこと</th><th scope="col">操作</th></tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">風を数値で編集</th><td>緑の矢印、始点の丸、または画面下の表を選び、左側の「3. 選択中の風」を変更します。</td></tr>
+            <tr><th scope="row">地図を移動</th><td>「地図を移動」を選んでドラッグします。ホイールまたは地図の＋−で拡大・縮小できます。</td></tr>
+            <tr><th scope="row">操作を取り消す</th><td>「元に戻す」を押します。「やり直す」で取り消した操作を再適用できます。</td></tr>
+            <tr><th scope="row">風を削除</th><td>対象の風を選び、「この風を削除」を押します。全削除には確認画面が表示されます。</td></tr>
+            <tr><th scope="row">編集用に保存</th><td>「JSONを書き出す」を使います。JSONには単位、座標系、補間設定も含まれます。</td></tr>
+            <tr><th scope="row">表として保存</th><td>「CSVを書き出す」を使います。表計算や制御点一覧の確認に向いています。</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note">
+        <strong>自動保存について</strong>
+        <p>作業中の状態は同じブラウザ内へ自動保存されます。別PCへの移動や正式な記録にはJSONを書き出してください。</p>
+      </div>
+    </section>
+
+    <section id="direction" class="guide-section">
+      <p class="eyebrow">DIRECTION &amp; UNITS</p>
+      <h2>矢印の向きと単位</h2>
+      <div class="direction-grid">
+        <div class="compass" aria-label="真北0度、東90度、南180度、西270度">
+          <span class="north">北 0°</span>
+          <span class="east">東 90°</span>
+          <span class="south">南 180°</span>
+          <span class="west">西 270°</span>
+          <span class="arrow" aria-hidden="true">↑</span>
+        </div>
+        <div>
+          <ul>
+            <li>矢印は、風が<strong>吹いていく向き</strong>を示します。</li>
+            <li>真北が0°、東が90°で、時計回りです。</li>
+            <li>風速の単位はm/s、高度の単位はmです。</li>
+            <li>気象情報の「北風」は北から来る風を指すため、定義を取り違えないでください。</li>
+          </ul>
+          <p class="safety">ANEMOの表示だけで実機の飛行可否や安全性を判断せず、実測、公式気象情報、別手法の検証、責任者の確認を併用してください。</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="guide-actions">
+      <a class="primary-link" href="./">エディターへ戻って試す</a>
+      <a href="#screen">ページの先頭へ戻る</a>
+    </div>
+  </main>
+
+  <footer>
+    <p><strong>ANEMO</strong> is an original project developed by WASA Flight Environment Emulator (WASAFEE).</p>
+    <p>画面の地図にはOpenStreetMapを使用しています。</p>
+  </footer>
+</body>
+</html>
