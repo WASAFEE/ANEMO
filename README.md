@@ -2,6 +2,9 @@
 
 ANEMOは、風向・風速データの作成、保存、可視化、気象データ取込みを扱うシステムです。地図上で複数の風ベクトルを入力し、場所によって連続的に変化する風場を作成できます。
 
+> [!NOTE]
+> `develop`ブランチのREADMEは、[FlightEnvironmentEmulator Guide](https://flight-environment-emulator-guide.makotoyoshida.chatgpt.site/software/anemo)へ自動反映されます。反映は通常1分以内です。
+
 ANEMOは **WASA Flight Environment Emulator（WASAFEE）が独自に開発しているプロジェクト**です。WASA以外のソフトウェア、地図、気象データ、依存ライブラリには、それぞれの提供者と利用条件があります。
 
 > [!IMPORTANT]
